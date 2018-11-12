@@ -8,7 +8,7 @@ public class ArrayTaskList {
     }
     public int lookFor(Task[] elements, Task element1){
         for (int i = 0; i<elements.length; i++){
-            if (elements[i] == element1)
+            if (elements[i].equals(element1))
                 return i;
         }return -1;
     }
