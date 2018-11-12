@@ -45,20 +45,10 @@ public class ArrayTaskList {
 public ArrayTaskList incoming(int from, int to) {         
     int indexTmp[] = new int[0];         
     ArrayTaskList buff = this;         
-    for (int i = 0; i < tasks.length; i++) {             
-        if (buff.tasks[i].isActive()) {                 
-            if (buff.tasks[i].isRepeated()) {                         
+    for (int i = 0; i < tasks.length; i++) {                           
                 if (buff.tasks[i].nextTimeAfter(from)> to || buff.tasks[i].nextTimeAfter(from) == -1) {                             
                     indexTmp = addElementInBuff(indexTmp, i);                         
-                }                 
-            } else {                     
-                if (buff.tasks[i].getTime() <= from || buff.tasks[i].getTime() > to) {                         
-                    indexTmp = addElementInBuff(indexTmp, i);                     
-                }                 
-            }             
-        } else {                 
-            indexTmp = addElementInBuff(indexTmp, i);             
-        }         
+                }                         
     }         
     int tmp = 0;         
     for (int i = 0; i < indexTmp.length; i++) 
