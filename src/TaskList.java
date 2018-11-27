@@ -1,61 +1,68 @@
 import java.util.Arrays;
-public abstract class TaskList {
 
-    Task[] tasks = new Task[0];
-    public void add(Task task){
-        tasks = addElement(tasks,task);
-    }
-    public int lookFor(Task[] elements, Task element1){
-        for (int i = 0; i<elements.length; i++){
-            if (elements[i].equals(element1))
-                return i;
-        }return -1;
-    }
-    public boolean remove(Task task){
-        if (lookFor(tasks,task)== -1){
-            return  false;
-        }else{
-            tasks = removeElement(tasks,lookFor(tasks,task));
-            return true;
+public abstract class TaskList implements Iterable,Cloneable {
+
+    public abstract void add(Task task);
+
+    public abstract boolean remove(Task task) ;
+
+    public abstract int size();
+
+    public abstract Task getTask(int index) ;
+
+    public abstract TaskList newTaskList(TaskList list);
+
+    public TaskList incoming(int from, int to) {
+        int indexTmp[] = new int[0];
+        TaskList buff = null;
+        try {
+            buff = this.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
+        for (int i = 0; i < buff.size(); i++) {
+            if (buff.getTask(i).nextTimeAfter(from)> to || buff.getTask(i).nextTimeAfter(from) == -1) {
+                indexTmp = addElementInBuff(indexTmp, i);
+            }
+        }
+        int tmp = 0;
+        for (int i = 0; i < indexTmp.length; i++)
+        {
+            if (buff.remove(buff.getTask(indexTmp[i] - tmp))) {
+                tmp++;
+            }
+        }
+        return buff;
     }
-    public int size(){
-        return tasks.length;
-    }
-    public Task getTask(int index){
-        return tasks[index];
-    }
-    Task[] addElement(Task[] a, Task e) {
-        a  = Arrays.copyOf(a, a.length + 1);
+    int[] addElementInBuff(int[] a, int e) {
+        a = Arrays.copyOf(a, a.length + 1);
         a[a.length - 1] = e;
         return a;
     }
-    Task[] removeElement(Task[] begin, int element) {
-        Task[] re = new Task[begin.length - 1];
-        System.arraycopy(begin, 0, re, 0, element);
-        System.arraycopy(begin, element + 1, re, element, begin.length - element - 1);
-        return re;
+    public Task checkTask(Task x){
+        if (x.getTime() >= 0 && x.getEndTime()>=0 && x.getEndTime() >=0){
+            if (x.getRepeatInterval() > 0 || !x.isRepeated()){
+                if (x != null){
+                    return x;
+                }else {
+                    throw new TaskException("Task is empty");
+                }
+            }else {
+                throw new IntervalException("Illegal Interval");
+            }
+        }else {
+            throw new ArgumentException("Time <= 0");
+        }
     }
-   int[] addElementInBuff(int[] a, int e) {         
-       a = Arrays.copyOf(a, a.length + 1);         
-       a[a.length - 1] = e;         
-       return a;     
-   } 
-public TaskList incoming(int from, int to) {         
-    int indexTmp[] = new int[0];         
-    TaskList buff = this;         
-    for (int i = 0; i < tasks.length; i++) {                           
-                if (buff.tasks[i].nextTimeAfter(from)> to || buff.tasks[i].nextTimeAfter(from) == -1) {                             
-                    indexTmp = addElementInBuff(indexTmp, i);                         
-                }                         
-    }         
-    int tmp = 0;         
-    for (int i = 0; i < indexTmp.length; i++) 
-    {             
-        if (buff.remove(buff.getTask(indexTmp[i] - tmp))) {                 
-            tmp++;             
-        }         
-    }         
-    return buff;     
+    public int checkFindValue(int x){
+        if (x >= size()){
+            throw new ArgumentException("Element is outside the array");
+        }else {
+            return x;
+        }
+    }
+    @Override
+    public TaskList clone() throws CloneNotSupportedException {
+        return (TaskList) super.clone();
     }
 }
