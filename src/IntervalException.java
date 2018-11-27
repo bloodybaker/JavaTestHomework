@@ -1,5 +1,3 @@
-package ua.edu.sumdu.j2se.chikalovEugene.tasks;
-
 public class IntervalException extends RuntimeException {
     public IntervalException() {
         super();
